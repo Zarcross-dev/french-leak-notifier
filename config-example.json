@@ -1,0 +1,12 @@
+{
+    "webhook_url": "https://discord.com/api/webhooks/...",
+    "notification_mode": "realtime",
+    "check_interval_seconds": 300,
+    "language": "fr",
+    
+    "notes": {
+        "notification_mode": "realtime | 1d | 7d | 30d",
+        "check_interval_seconds": "Interval between each check (in seconds). Default: 300 (5 min).",
+        "webhook_url": "Discord webhook URL."
+    }
+}
