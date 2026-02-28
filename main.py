@@ -31,7 +31,8 @@ from bs4 import BeautifulSoup, Tag
 
 BASE_DIR = Path(__file__).resolve().parent
 CONFIG_PATH = BASE_DIR / "config.json"
-SEEN_PATH = BASE_DIR / "seen_leaks.json"
+DATA_DIR = Path(os.environ.get("DATA_DIR", str(BASE_DIR)))
+SEEN_PATH = DATA_DIR / "seen_leaks.json"
 SITE_URL = "https://bonjourlafuite.eu.org/"
 
 FRENCH_MONTHS = {
@@ -100,11 +101,46 @@ class Leak:
 # --------------------------------------------------------------
 
 def load_config():
-    if not CONFIG_PATH.exists():
-        log.error("Fichier de configuration introuvable : %s", CONFIG_PATH)
+    """
+    Charge la configuration depuis les variables d'environnement
+    en priorite, puis depuis config.json en fallback.
+    Les variables d'environnement supportees :
+      - WEBHOOK_URL
+      - NOTIFICATION_MODE  (realtime | 1d | 7d | 30d)
+      - CHECK_INTERVAL     (en secondes)
+    """
+    config = {}
+
+    # Fallback : charger config.json s'il existe
+    if CONFIG_PATH.exists():
+        with open(CONFIG_PATH, "r", encoding="utf-8") as f:
+            config = json.load(f)
+
+    # Variables d'environnement (prioritaires)
+    env_webhook = os.environ.get("WEBHOOK_URL")
+    env_mode = os.environ.get("NOTIFICATION_MODE")
+    env_interval = os.environ.get("CHECK_INTERVAL")
+
+    if env_webhook:
+        config["webhook_url"] = env_webhook
+    if env_mode:
+        config["notification_mode"] = env_mode
+    if env_interval:
+        try:
+            config["check_interval_seconds"] = int(env_interval)
+        except ValueError:
+            log.warning("CHECK_INTERVAL invalide ('%s'), utilisation de la valeur par defaut.", env_interval)
+
+    # Validation minimale
+    if not config.get("webhook_url"):
+        log.error(
+            "Aucune URL de webhook configuree. "
+            "Definissez la variable d'environnement WEBHOOK_URL "
+            "ou configurez webhook_url dans config.json."
+        )
         sys.exit(1)
-    with open(CONFIG_PATH, "r", encoding="utf-8") as f:
-        return json.load(f)
+
+    return config
 
 
 def load_seen():
@@ -442,10 +478,6 @@ def main():
     webhook_url = config.get("webhook_url", "")
     mode = config.get("notification_mode", "realtime")
     check_interval = config.get("check_interval_seconds", 300)
-
-    if not webhook_url or "YOUR_WEBHOOK" in webhook_url:
-        log.error("Veuillez configurer l'URL du webhook Discord dans config.json")
-        sys.exit(1)
 
     log.info("=" * 60)
     log.info("French Leak Notifier")

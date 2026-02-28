@@ -16,16 +16,74 @@ Surveillez les fuites de données françaises en temps réel ! Ce programme pars
   - 🔴 Rouge — Revendiquée (peu fiable)
 - **Données complètes** : nom, données exposées, nombre de personnes affectées, sources
 - **Dédoublonnage** automatique (ne renvoie jamais deux fois la même fuite)
+- **Docker** — Déploiement simple avec Docker Compose
 
-## 📦 Installation
+---
+
+## � Docker (recommandé)
+
+### Démarrage rapide
+
+```bash
+# 1. Cloner le dépôt
+git clone https://github.com/Zarcross-dev/french-leak-notifier.git
+cd french-leak-notifier
+
+# 2. Configurer les variables d'environnement
+cp .env.example .env
+# Éditez .env et renseignez votre WEBHOOK_URL
+
+# 3. Lancer
+docker compose up -d
+```
+
+### Variables d'environnement
+
+| Variable | Obligatoire | Défaut | Description |
+|---|---|---|---|
+| `WEBHOOK_URL` | ✅ | — | URL du webhook Discord |
+| `NOTIFICATION_MODE` | ❌ | `realtime` | `realtime`, `1d`, `7d` ou `30d` |
+| `CHECK_INTERVAL` | ❌ | `300` | Intervalle de vérification en secondes (mode realtime) |
+
+### Commandes utiles
+
+```bash
+# Voir les logs en temps réel
+docker compose logs -f
+
+# Redémarrer après changement de config
+docker compose down && docker compose up -d
+
+# Rebuild après mise à jour du code
+docker compose up -d --build
+```
+
+### Persistance des données
+
+Les leaks déjà vus sont stockés dans un volume Docker (`leak-data`). Les données persistent entre les redémarrages du conteneur.
+
+---
+
+## �📦 Installation locale (sans Docker)
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## ⚙️ Configuration
+### ⚙️ Configuration
 
-Éditez le fichier `config.json` :
+Vous pouvez configurer via **variables d'environnement** ou via le fichier `config.json` :
+
+#### Option 1 : Variables d'environnement
+
+```bash
+export WEBHOOK_URL="https://discord.com/api/webhooks/VOTRE_ID/VOTRE_TOKEN"
+export NOTIFICATION_MODE="realtime"
+export CHECK_INTERVAL="300"
+python main.py
+```
+
+#### Option 2 : Fichier config.json
 
 ```json
 {
@@ -35,13 +93,9 @@ pip install -r requirements.txt
 }
 ```
 
-| Paramètre | Description |
-|---|---|
-| `webhook_url` | URL du webhook Discord |
-| `notification_mode` | `realtime`, `1d`, `7d` ou `30d` |
-| `check_interval_seconds` | Intervalle de vérification en secondes (mode realtime uniquement, défaut 300 = 5 min) |
+> **Note :** Les variables d'environnement sont prioritaires sur `config.json`.
 
-## 🚀 Lancement
+### 🚀 Lancement
 
 ```bash
 python main.py
@@ -49,14 +103,19 @@ python main.py
 
 Le programme tourne en continu. Lors de la première exécution, il indexe toutes les fuites existantes sans envoyer de notification. Seules les **nouvelles** fuites détectées seront envoyées.
 
+---
+
 ## 📁 Fichiers
 
 | Fichier | Description |
 |---|---|
 | `main.py` | Programme principal |
-| `config.json` | Configuration (webhook, mode, intervalle) |
+| `config.json` | Configuration locale (optionnel avec Docker) |
 | `seen_leaks.json` | Base des fuites déjà vues (généré automatiquement) |
 | `requirements.txt` | Dépendances Python |
+| `Dockerfile` | Image Docker |
+| `docker-compose.yml` | Orchestration Docker |
+| `.env.example` | Template des variables d'environnement |
 
 ## 📸 Aperçu Discord
 
