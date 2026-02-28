@@ -1,0 +1,16 @@
+services:
+  french-leak-notifier:
+    build: .
+    image: french-leak-notifier:latest
+    container_name: french-leak-notifier
+    restart: unless-stopped
+    environment:
+      - WEBHOOK_URL=
+      - NOTIFICATION_MODE=realtime
+      - CHECK_INTERVAL=300
+      - DATA_DIR=/app/data
+    volumes:
+      - leak-data:/app/data
+
+volumes:
+  leak-data:
