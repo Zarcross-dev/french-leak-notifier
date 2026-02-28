@@ -376,7 +376,9 @@ def send_discord_summary(webhook_url, leaks, period_label):
         log.error("Erreur envoi recapitulatif : %s", e)
         return False
 
-    for leak in leaks:
+    # Envoyer du plus ancien au plus recent pour respecter la chronologie
+    sorted_leaks = sorted(leaks, key=lambda l: l.date or datetime.min)
+    for leak in sorted_leaks:
         send_discord_embed(webhook_url, leak)
         time.sleep(1)
     return True
