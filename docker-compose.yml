@@ -4,8 +4,10 @@ services:
     image: french-leak-notifier:latest
     container_name: french-leak-notifier
     restart: unless-stopped
-    env_file:
-      - .env
+    environment:
+      - WEBHOOK_URL=
+      - NOTIFICATION_MODE=realtime
+      - CHECK_INTERVAL=300
     environment:
       - DATA_DIR=/app/data
     volumes:
