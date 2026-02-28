@@ -8,7 +8,6 @@ services:
       - WEBHOOK_URL=
       - NOTIFICATION_MODE=realtime
       - CHECK_INTERVAL=300
-    environment:
       - DATA_DIR=/app/data
     volumes:
       - leak-data:/app/data
