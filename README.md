@@ -1,8 +1,8 @@
-# 🇫🇷 French Leak Notifier
+# French Leak Notifier
 
 Surveillez les fuites de données françaises en temps réel ! Ce programme parse le site [bonjourlafuite.eu.org](https://bonjourlafuite.eu.org/) et envoie les nouvelles fuites sur un webhook Discord avec des embeds colorés selon la véracité.
 
-## 🎯 Fonctionnalités
+## Fonctionnalités
 
 - **Parsing automatique** du site bonjourlafuite.eu.org
 - **4 modes de notification** :
@@ -20,7 +20,7 @@ Surveillez les fuites de données françaises en temps réel ! Ce programme pars
 
 ---
 
-## � Docker (recommandé)
+## Docker (recommandé)
 
 ### Démarrage rapide
 
@@ -64,13 +64,13 @@ Les leaks déjà vus sont stockés dans un volume Docker (`leak-data`). Les donn
 
 ---
 
-## �📦 Installation locale (sans Docker)
+## Installation locale (sans Docker)
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### ⚙️ Configuration
+### Configuration
 
 Vous pouvez configurer via **variables d'environnement** ou via le fichier `config.json` :
 
@@ -95,7 +95,7 @@ python main.py
 
 > **Note :** Les variables d'environnement sont prioritaires sur `config.json`.
 
-### 🚀 Lancement
+### Lancement
 
 ```bash
 python main.py
@@ -105,7 +105,7 @@ Le programme tourne en continu. Lors de la première exécution, il indexe toute
 
 ---
 
-## 📁 Fichiers
+## Fichiers
 
 | Fichier | Description |
 |---|---|
@@ -117,7 +117,7 @@ Le programme tourne en continu. Lors de la première exécution, il indexe toute
 | `docker-compose.yml` | Orchestration Docker |
 | `.env.example` | Template des variables d'environnement |
 
-## 📸 Aperçu Discord
+## Aperçu Discord
 
 Chaque notification contient :
 - Le nom de l'organisme touché
